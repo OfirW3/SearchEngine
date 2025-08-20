@@ -9,7 +9,7 @@ namespace SearchEngineAssignment
     internal class SearchEngine
     {
         private string[] dataset;
-        public Dictionary<string, HashSet<int>> index; //* This it the best data stracture for indexing the dataset efficentlly
+        private Dictionary<string, HashSet<int>> index; //* This it the best data stracture for indexing the dataset efficentlly
         public SearchEngine(string[] dataset)
         {
             this.dataset = dataset;
@@ -18,6 +18,7 @@ namespace SearchEngineAssignment
 
         private void DatasetIndex()
         {
+            this.index = new Dictionary<string, HashSet<int>>();
             for (int i = 0; i < dataset.Length; i++) //Indexing every word in the dataset - the most efficent way is to read every word and index it
             {
                 string[] words = dataset[i].ToLower().Split(' ');
@@ -48,7 +49,7 @@ namespace SearchEngineAssignment
             HashSet<int> indexes = filter.MatchingIndexs(this);
             string[] result = new string[index.Count];
             int count = 0;
-            foreach(int index in  indexes)
+            foreach(int index in indexes)
             {
                 result[count] = dataset[index];
                 count++;
