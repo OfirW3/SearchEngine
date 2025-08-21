@@ -17,12 +17,10 @@ namespace SearchEngineAssignment
             this.right = right;
         }
 
-        public override HashSet<int> MatchingIndexs(SearchEngine engine)
+        public override void ProcessFilter(SearchEngine engine,HashSet<int> result)
         {
-            HashSet<int> leftIndexes = left.MatchingIndexs(engine);
-            HashSet<int> rightIndexes = right.MatchingIndexs(engine);
-            leftIndexes.UnionWith(rightIndexes);//Returnes the union of left and right indexes - implmenting the OR operator
-            return leftIndexes;
+            left.ProcessFilter(engine, result); //Get the indexes from the left filter
+            right.ProcessFilter(engine, result); //Get the indexes from the right filter
         }
     }
 }

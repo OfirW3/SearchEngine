@@ -16,12 +16,15 @@ namespace SearchEngineAssignment
             this.right = right;
         }
 
-        public override HashSet<int> MatchingIndexs(SearchEngine engine)
+        public override void ProcessFilter(SearchEngine engine, HashSet<int> result)
         {
-            HashSet<int> leftIndexes = left.MatchingIndexs(engine);
-            HashSet<int> rightIndexes = right.MatchingIndexs(engine);
+            HashSet<int> leftIndexes = new HashSet<int>();
+            HashSet<int> rightIndexes = new HashSet<int>();
+            left.ProcessFilter(engine, leftIndexes); //Get the indexes from the left filter
+            right.ProcessFilter(engine, rightIndexes); //Get the indexes from the right filter
+            //Intersect the two sets to get the common indexes
             leftIndexes.IntersectWith(rightIndexes);
-            return leftIndexes; //Returnes the intercetion between the left indexes and the right indexes - AND operator
+            result.UnionWith(leftIndexes); //Returnes the intersection of left and right indexes - implmenting the AND operator
         }
 
     }

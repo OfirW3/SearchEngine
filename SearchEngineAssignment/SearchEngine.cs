@@ -46,13 +46,18 @@ namespace SearchEngineAssignment
 
         public string[] Search(SearchFilter filter)
         {
-            HashSet<int> indexes = filter.MatchingIndexs(this);
-            string[] result = new string[index.Count];
-            int count = 0;
-            foreach(int index in indexes)
+            HashSet<int> filteredIndexes = new HashSet<int>();
+            filter.ProcessFilter(this, filteredIndexes); //Process the filter to get the indexes
+            if (filteredIndexes.Count == 0)
             {
-                result[count] = dataset[index];
-                count++;
+                return new string[0]; //If no matches found, return an empty array
+            }
+            string[] result = new string[filteredIndexes.Count];
+            int i = 0;
+            foreach(int index in filteredIndexes)
+            {
+                result[i] = dataset[index];
+                i++;
             }
             return result;
         }

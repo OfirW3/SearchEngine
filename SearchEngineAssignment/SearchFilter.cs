@@ -8,6 +8,6 @@ namespace SearchEngineAssignment
 {
     internal abstract class SearchFilter
     {
-        public abstract HashSet<int> MatchingIndexs(SearchEngine engine);
+        public abstract void ProcessFilter(SearchEngine engine,HashSet<int> result);
     }
 }

@@ -16,9 +16,9 @@ namespace SearchEngineAssignment
             this.word = word;
         }
 
-        public override HashSet<int> MatchingIndexs(SearchEngine engine)
+        public override void ProcessFilter(SearchEngine engine,HashSet<int> result)
         {
-            return engine.GetMatchesIndexes(this.word);
+            result.UnionWith(engine.GetMatchesIndexes(this.word));
         }
     }
 }
