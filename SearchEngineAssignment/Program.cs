@@ -20,7 +20,7 @@ namespace SearchEngineAssignment
             SearchFilter leftBranch = new AndOperator(
             new WordFilter("Today"),
             new WordFilter("Sunday")
-        );
+            );
 
             // Build the right side of the OR operator: ( ( “not” || “Tomorrow” ) && “is” )
             SearchFilter rightBranch = new AndOperator(

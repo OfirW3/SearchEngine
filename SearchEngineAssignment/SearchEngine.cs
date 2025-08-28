@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,45 +11,55 @@ namespace SearchEngineAssignment
     internal class SearchEngine
     {
         private string[] dataset;
-        private Dictionary<string, HashSet<int>> index; //* This it the best data stracture for indexing the dataset efficentlly
+        private PrefixTree indexTree;
         public SearchEngine(string[] dataset)
         {
             this.dataset = dataset;
+            this.indexTree = new PrefixTree();
             DatasetIndex();
         }
-
-        private void DatasetIndex()
+        
+        private void DatasetIndex() //Indexing the dataset for faster searching. Complexity is O(Number of words in dataset).
         {
-            this.index = new Dictionary<string, HashSet<int>>();
-            for (int i = 0; i < dataset.Length; i++) //Indexing every word in the dataset - the most efficent way is to read every word and index it
+            for (int i = 0; i < dataset.Length; i++) //Speed: O(number of letters in the dataset)
             {
                 string[] words = dataset[i].ToLower().Split(' ');
-                foreach(string word in words)
+                foreach (string word in words)
                 {
-                    if (!this.index.ContainsKey(word))
+                    PrefixTree tail = this.indexTree;
+                    foreach (char c in word)
                     {
-                        HashSet<int> set = new HashSet<int>();
-                        this.index[word] = set;
+                        if(!tail.Children.ContainsKey(c))
+                        {
+                            tail.Children[c] = new PrefixTree();
+                        }
+                        tail = tail.Children[c];
                     }
-                    this.index[word].Add(i);
+                    tail.Indexes.Add(i);
                 }
-            }
+            }       
         }
         
         public HashSet<int> GetMatchesIndexes(string word)
         {
             word = word.ToLower();
-            if (index.ContainsKey(word))
+            PrefixTree tail = this.indexTree;
+            HashSet<int> indexes = new HashSet<int>();
+            foreach(char c in word)
             {
-                return new HashSet<int>(index[word]);//Creating a copy in order to not corrupt the original index HashSet
+                if (!tail.Children.ContainsKey(c))
+                {
+                    return new HashSet<int>();
+                }
+                tail = tail.Children[c];
             }
-            return new HashSet<int>();
+            return new HashSet<int>(tail.Indexes);
         }
 
         public string[] Search(SearchFilter filter)
         {
             HashSet<int> filteredIndexes = new HashSet<int>();
-            filter.ProcessFilter(this, filteredIndexes); //Process the filter to get the indexes
+            filter.ProcessFilter(this, filteredIndexes); //Process the filter to get the matching indexes according to the filter and the dataset
             if (filteredIndexes.Count == 0)
             {
                 return new string[0]; //If no matches found, return an empty array
