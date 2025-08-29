@@ -13,7 +13,7 @@ namespace SearchEngineAssignment
 
         public bool IsEndOfWord { get; set; }
 
-        public PrefixTree()
+        public PrefixTree(bool IsEndOfWord)
         {
             this.Children = new Dictionary<char, PrefixTree>();
             this.Indexes = new HashSet<int>();
@@ -36,16 +36,20 @@ namespace SearchEngineAssignment
             return indexes;
         }
 
-        private void CollectAllIndexes(PrefixTree subTree, HashSet<int> result)
+        public void CollectAllIndexes(PrefixTree subTree, HashSet<int> result)
         {
-            if (subTree.IsEndOfWord)
-            {
-                result.UnionWith(subTree.Indexes);
-            }
-            else {
-                foreach(var child in subTree.Children)
+            Stack<PrefixTree> stack = new Stack<PrefixTree>();
+            stack.Push(subTree);
+            while (stack.Count > 0) 
+            { 
+                PrefixTree node = stack.Pop();
+                if (node.Indexes.Count > 0) 
                 {
-                    CollectAllIndexes(child.Value,result);
+                    result.UnionWith(node.Indexes);
+                }
+                foreach(var child in node.Children)
+                {
+                    stack.Push(child.Value);
                 }
             }
         }

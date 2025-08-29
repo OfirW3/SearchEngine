@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.Tracing;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,7 +16,7 @@ namespace SearchEngineAssignment
         public SearchEngine(string[] dataset)
         {
             this.dataset = dataset;
-            this.indexTree = new PrefixTree();
+            this.indexTree = new PrefixTree(false);
             DatasetIndex();
         }
 
@@ -31,11 +32,12 @@ namespace SearchEngineAssignment
                     {
                         if (!tail.Children.ContainsKey(c))
                         {
-                            tail.Children[c] = new PrefixTree();
+                            tail.Children[c] = new PrefixTree(false);
                         }
                         tail = tail.Children[c];
-                        tail.Indexes.Add(i); //More memory consuming but much more fast approch - saves traversing the whole tree recursivley for each prefix
                     }
+                    tail.Indexes.Add(i); 
+                    tail.IsEndOfWord = true;
                 }
             }
         }
@@ -43,16 +45,7 @@ namespace SearchEngineAssignment
         public HashSet<int> GetMatchesIndexes(string prefix)
         {
             prefix = prefix.ToLower();
-            PrefixTree tail = this.indexTree;
-            foreach (char c in prefix)
-            {
-                if(!tail.Children.ContainsKey(c))
-                {
-                    return new HashSet<int>();
-                }
-                tail = tail.Children[c];
-            }
-            return tail.Indexes;
+            return this.indexTree.GetIndexesByPrefix(prefix);
         }
 
         public string[] Search(SearchFilter filter)
@@ -63,14 +56,16 @@ namespace SearchEngineAssignment
             {
                 return new string[0]; //If no matches found, return an empty array
             }
-            string[] result = new string[filteredIndexes.Count];
-            int i = 0;
+            HashSet<string> unique = new HashSet<string>();
+            List<string> result = new List<string>();
             foreach (int index in filteredIndexes)
             {
-                result[i] = dataset[index];
-                i++;
+                if (unique.Add(dataset[index]))
+                {
+                    result.Add(dataset[index]);
+                }
             }
-            return result;
+            return result.ToArray();
         }
     }
 }
