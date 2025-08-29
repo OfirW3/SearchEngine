@@ -42,7 +42,7 @@ namespace SearchEngineAssignment
             }
         }
 
-        public HashSet<int> GetMatchesIndexes(string prefix)
+        public HashSet<int> GetMatchingIndexes(string prefix)
         {
             prefix = prefix.ToLower();
             return this.indexTree.GetIndexesByPrefix(prefix);

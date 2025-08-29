@@ -18,7 +18,7 @@ namespace SearchEngineAssignment
 
         public override void ProcessFilter(SearchEngine engine,HashSet<int> result)
         {
-            result.UnionWith(engine.GetMatchesIndexes(this.Word));
+            result.UnionWith(engine.GetMatchingIndexes(this.Word));
         }
     }
 }
