@@ -9,16 +9,16 @@ namespace SearchEngineAssignment
 {
     internal class WordFilter : SearchFilter
     {
-        public string word { get; private set; }
+        public string Word { get; private set; }
 
         public WordFilter(string word)
         {
-            this.word = word;
+            this.Word = word;
         }
 
         public override void ProcessFilter(SearchEngine engine,HashSet<int> result)
         {
-            result.UnionWith(engine.GetMatchesIndexes(this.word));
+            result.UnionWith(engine.GetMatchesIndexes(this.Word));
         }
     }
 }

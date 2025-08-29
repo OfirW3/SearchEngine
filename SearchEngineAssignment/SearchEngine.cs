@@ -18,7 +18,7 @@ namespace SearchEngineAssignment
             this.indexTree = new PrefixTree();
             DatasetIndex();
         }
-        
+
         private void DatasetIndex() //Indexing the dataset for faster searching. Complexity is O(Number of words in dataset).
         {
             for (int i = 0; i < dataset.Length; i++) //Speed: O(number of letters in the dataset)
@@ -29,31 +29,30 @@ namespace SearchEngineAssignment
                     PrefixTree tail = this.indexTree;
                     foreach (char c in word)
                     {
-                        if(!tail.Children.ContainsKey(c))
+                        if (!tail.Children.ContainsKey(c))
                         {
                             tail.Children[c] = new PrefixTree();
                         }
                         tail = tail.Children[c];
+                        tail.Indexes.Add(i); //More memory consuming but much more fast approch - saves traversing the whole tree recursivley for each prefix
                     }
-                    tail.Indexes.Add(i);
                 }
-            }       
+            }
         }
-        
-        public HashSet<int> GetMatchesIndexes(string word)
+
+        public HashSet<int> GetMatchesIndexes(string prefix)
         {
-            word = word.ToLower();
+            prefix = prefix.ToLower();
             PrefixTree tail = this.indexTree;
-            HashSet<int> indexes = new HashSet<int>();
-            foreach(char c in word)
+            foreach (char c in prefix)
             {
-                if (!tail.Children.ContainsKey(c))
+                if(!tail.Children.ContainsKey(c))
                 {
                     return new HashSet<int>();
                 }
                 tail = tail.Children[c];
             }
-            return new HashSet<int>(tail.Indexes);
+            return tail.Indexes;
         }
 
         public string[] Search(SearchFilter filter)
@@ -66,7 +65,7 @@ namespace SearchEngineAssignment
             }
             string[] result = new string[filteredIndexes.Count];
             int i = 0;
-            foreach(int index in filteredIndexes)
+            foreach (int index in filteredIndexes)
             {
                 result[i] = dataset[index];
                 i++;
